@@ -1,0 +1,40 @@
+ManifestFileVersion: 0
+CRC: 2056987611
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 7728e6ab5513661c8e7da44b9c8230fa
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f993dded2bc07d3bf4f2a42602de0f27
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 7728e6ab5513661c8e7da44b9c8230fa
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 58
+  Script: {instanceID: 0}
+- Class: 82
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: de450a7136380854685e2aecc8318690, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 8e452f40aeee9463fa0243b7a797155b, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: bd582793e36c2d3439d5e5e1762ca23e, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 212
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Collectable.prefab
+Dependencies: []
