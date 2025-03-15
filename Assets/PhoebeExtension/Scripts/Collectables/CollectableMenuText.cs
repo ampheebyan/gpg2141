@@ -22,6 +22,7 @@ public class CollectableMenuText : MonoBehaviour
 
     public void SetText()
     {
+        // set collectable text from playerdata
         text.SetText("Collectables collected: "+PlayerData.Instance.GetCollectedObjects());
     }
 }

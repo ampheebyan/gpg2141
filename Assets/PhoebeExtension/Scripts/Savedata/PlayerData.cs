@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class PlayerData : MonoBehaviour
 {
-
+    // struct to save/load data
     public struct Data
     {
         public string LevelName;
         public Vector2 SavedPosition;
         public int CollectedObjects;
     }
+    // singleton instance
     public static PlayerData Instance;
+    // struct instance
     private Data _savedData = new ()
     {
         LevelName = "Zone1", // default
@@ -35,39 +37,47 @@ public class PlayerData : MonoBehaviour
 
     private void Start()
     {
+        // load data
         LoadData();
     }
 
     public void UpdateLevelName(string levelName)
     {
+        // update level name
         _savedData.LevelName = levelName;
     }
 
     public string GetLevelName()
     {
+        // return level name
         return _savedData.LevelName;
     }
 
     public int GetCollectedObjects()
     {
+        // return collected objects
         return _savedData.CollectedObjects;
     }
 
     public Vector2 GetSavedPosition()
     {
+        // return saved position
         return _savedData.SavedPosition;
     }
 
     public void UpdateCollectedObjects()
     {
+        // increment collected objects
         _savedData.CollectedObjects++;
     }
 
     public void UpdateSavedPosition(Vector2 position)
     {
+        // update saved position
         _savedData.SavedPosition = position;
     }
 
+    // reset data
     public void ResetData()
     {
         _savedData = new ()
@@ -78,6 +88,7 @@ public class PlayerData : MonoBehaviour
         };
     }
     
+    // load from JSON and populate savedData
     public void LoadData()
     {
         if (JSONHandler.Instance != null)
@@ -95,6 +106,7 @@ public class PlayerData : MonoBehaviour
         }
     }
 
+    // save to JSON
     public void SaveData()
     {
         if (JSONHandler.Instance != null)

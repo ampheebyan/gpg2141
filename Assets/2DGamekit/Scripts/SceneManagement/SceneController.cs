@@ -99,6 +99,7 @@ namespace Gamekit2D
 
         public static void TransitionToSceneFromData(TransitionPoint transitionPoint)
         {
+            // if the newSceneName doesn't match the current PlayerData.Instance.GetLevelName, set it to that
             if (transitionPoint.newSceneName != null && transitionPoint.newSceneName != PlayerData.Instance.GetLevelName())
             {
                 transitionPoint.newSceneName = PlayerData.Instance.GetLevelName();

@@ -4,22 +4,27 @@ using UnityEngine;
 
 public static class FSOperations
 {
+    // Return enum
     public enum IsFolder_Return
     {
         IsFolder,
         IsFile,
         NotExist
     }
+    // Check if file exists, return bool
     public static bool FileExists(string path)
     {
         return File.Exists(path);
     }
 
+    // Check if directory exists, return bool
     public static bool DirectoryExists(string path)
     {
         return Directory.Exists(path);
     }
 
+    
+    // Check type of specified path, return enum
     public static IsFolder_Return IsFolder(string path)
     {
         if (!DirectoryExists(path) || !FileExists(path)) return IsFolder_Return.NotExist;
@@ -30,6 +35,7 @@ public static class FSOperations
         return IsFolder_Return.IsFile;
     }
     
+    // Create directory if doesn't exist
     public static bool CreateDirectory(string path)
     {
         try
@@ -44,6 +50,7 @@ public static class FSOperations
         }
     }
 
+    // Write file content, overwrite if told to
     public static bool WriteFile(string path, string content, bool overwrite = false)
     {
         try
@@ -71,6 +78,7 @@ public static class FSOperations
 
     }
 
+    // Read file as string
     public static string ReadFile(string path)
     {
         try

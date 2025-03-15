@@ -9,30 +9,38 @@ using UnityEngine.UI;
 
 public class TextureLoader : MonoBehaviour
 {
+    // static texture keyvalue list
     public static List<KeyValuePair<string, Texture2D>> textures;
     
-    
+    // where to load from
     public enum Type
     {
         texture,
         sprite,
         bundle
     }
-    
+
+    // type in bundle/to load from
     public Type type = Type.texture;
     public Type typeInBundle = Type.texture;
         
+    // name in bundle
     [SerializeField] private string nameInBundle = "texture";
+    // filepath of bundle/asset
     [SerializeField] private string filePath = "";
 
+    // should load on enable?
     [SerializeField] private bool loadOnEnable = false;
     
     private void OnEnable()
     {
+        // check if loadonenable
         if (loadOnEnable)
         {
+            // check what type
             switch (type)
             {
+                // run through functions
                 case Type.texture:
                     StartCoroutine(LoadTexture(filePath));
                     break;
@@ -60,23 +68,29 @@ public class TextureLoader : MonoBehaviour
 
     public IEnumerator LoadFromBundle(Type type, string name, string path = "nothing")
     {
+        // validation
         if (this.type == Type.bundle)
         {
             if (path == "nothing") path = filePath;
             path = Path.Combine(Application.streamingAssetsPath, path);
 
+            // check if file exists
             if (FSOperations.FileExists(path))
             {
+                // load bundle
                 AssetBundle bundle = AssetBundle.LoadFromFile(filePath);
 
+                // ensure bundle actually loaded
                 if (bundle == null)
                 {
                     Debug.LogError("Bundle file is empty or failed to load.");
                     yield return null;
                 }
 
+                // load asset
                 Texture2D asset = bundle.LoadAsset<Texture2D>(name);
 
+                // figure out if sprite or texture and set texture slot accordingly
                 switch (type)
                 {
                     case Type.texture:
@@ -115,38 +129,58 @@ public class TextureLoader : MonoBehaviour
     
     public IEnumerator LoadSprite(string path = "nothing")
     {
+        // validation
         if (type == Type.sprite)
         {
             if (path == "nothing") path = filePath;
             path = Path.Combine(Application.streamingAssetsPath, path);
 
-            if (TextureLoader.textures != null)
+            // check if texture list is not null
+            if (textures != null)
             {
-                Texture2D _texture2D = textures.First(_ => _.Key == path).Value;
-                Sprite sprite = Sprite.Create(_texture2D, new Rect(0, 0, _texture2D.width, _texture2D.height),
-                    new Vector2(0.5f, 0f), _texture2D.width > _texture2D.height ? _texture2D.width : _texture2D.height);
-                if (TryGetComponent<SpriteRenderer>(out SpriteRenderer spriteRenderer))
+                // find texture and set spriterender to found texture
+                var _texture2D = textures.FirstOrDefault(_ => _.Key == path);
+
+                if (_texture2D.Value != null)
                 {
-                    spriteRenderer.sprite = sprite;
+                    Sprite sprite = Sprite.Create(_texture2D.Value, new Rect(0, 0, _texture2D.Value.width, _texture2D.Value.height),
+                        new Vector2(0.5f, 0f), _texture2D.Value.width > _texture2D.Value.height ? _texture2D.Value.width : _texture2D.Value.height);
+                    if (TryGetComponent<SpriteRenderer>(out SpriteRenderer spriteRenderer))
+                    {
+                        spriteRenderer.sprite = sprite;
+                    }
+                    else
+                    {
+                        Debug.LogError("No renderer attached.");
+                    }
+                    // break so dont continue
+                    yield break;
                 }
-                else
-                {
-                    Debug.LogError("No renderer attached.");
-                }
-                yield return null;
             }
             else
             {
-                TextureLoader.textures = new List<KeyValuePair<string, Texture2D>>();
+                // create if doesnt exist
+                textures = new List<KeyValuePair<string, Texture2D>>();
             }
             
+            // check if file exists
             if (FSOperations.FileExists(path))
             {
+                // load raw data
                 byte[] imageBytes = File.ReadAllBytes(path);
 
+                // create texture
                 Texture2D texture2D = new Texture2D(1, 1);
-                texture2D.LoadImage(imageBytes);
+                texture2D.LoadImage(imageBytes); // load into new texture from byte array
+
+                // if textures.Count is more than 64, get rid of the 63 previous keyvaluepairs. leave to garbage collection.
+                if (textures.Count > 64)
+                {
+                    textures = textures.Skip(63).ToList();
+                }
+                // add new texture as keyvaluepair
                 textures.Add(new KeyValuePair<string, Texture2D>(path, texture2D));
+                // create sprite and set spriterenderer sprite to new sprite
                 Sprite sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height),
                     new Vector2(0.5f, 0f), texture2D.width > texture2D.height ? texture2D.width : texture2D.height);
 
@@ -169,44 +203,66 @@ public class TextureLoader : MonoBehaviour
     }
     public IEnumerator LoadTexture(string path = "nothing")
     {
+        // validation
         if (type == Type.texture)
         {
             if (path == "nothing") path = filePath;
             path = Path.Combine(Application.streamingAssetsPath, path);
 
-            if (TextureLoader.textures != null)
+            // check if textures is not null
+            if (textures != null)
             {
-                Texture2D _texture2D = textures.First(_ => _.Key == path).Value;
-                if (TryGetComponent<Renderer>(out Renderer _renderer))
+                // find texture2D in list
+                var _texture2D = textures.FirstOrDefault(_ => _.Key == path);
+
+                // if found
+                if (_texture2D.Value != null)
                 {
-                    _renderer.material.mainTexture = _texture2D;
-                }
-                else
-                {
-                    if (TryGetComponent<RawImage>(out RawImage image))
+                    // set texture
+                    if (TryGetComponent<Renderer>(out Renderer _renderer))
                     {
-                        image.texture = _texture2D;
+                        _renderer.material.mainTexture = _texture2D.Value;
                     }
                     else
                     {
-                        Debug.LogError("No renderer(s) attached.");
+                        if (TryGetComponent<RawImage>(out RawImage image))
+                        {
+                            image.texture = _texture2D.Value;
+                        }
+                        else
+                        {
+                            Debug.LogError("No renderer(s) attached.");
+                        }
                     }
-                }
 
-                yield return null;
+                    yield break;
+                }
             }
             else
             {
-                TextureLoader.textures = new List<KeyValuePair<string, Texture2D>>();
+                // create if doesnt exist
+                textures = new List<KeyValuePair<string, Texture2D>>();
             }
             
+            // check if file exists
             if (FSOperations.FileExists(path))
             {
+                // load raw data
                 byte[] imageBytes = File.ReadAllBytes(path);
             
+                // create temporary image
                 Texture2D texture2D = new Texture2D(2, 2);
+                // load raw data into image
                 texture2D.LoadImage(imageBytes);
+                
+                // if more than 64 saved textures, clear 63 of them
+                if (textures.Count > 64)
+                {
+                    textures = textures.Skip(63).ToList();
+                }
+                // add texture as keyvaluepair
                 textures.Add(new KeyValuePair<string, Texture2D>(path, texture2D));
+                // set texture to renderer component
                 if (TryGetComponent<Renderer>(out Renderer _renderer))
                 {
                     _renderer.material.mainTexture = texture2D;

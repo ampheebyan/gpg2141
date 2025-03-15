@@ -11,6 +11,7 @@ namespace Gamekit2D
 
         public void Quit()
         {
+            // modification to StartUI.cs: if there is a current LevelDataLoader instance, save position and then if PlayerData has an instance, save data.
             if (LevelDataLoader.current)
             {
                 LevelDataLoader.current.SavePosition();

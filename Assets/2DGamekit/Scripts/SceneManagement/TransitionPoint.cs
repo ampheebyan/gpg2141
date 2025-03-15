@@ -45,6 +45,7 @@ namespace Gamekit2D
 
         void Start ()
         {
+            // if MainMenu, set newSceneName to the instance level name
             if (isMainMenu)
             {
                 newSceneName = PlayerData.Instance.GetLevelName();

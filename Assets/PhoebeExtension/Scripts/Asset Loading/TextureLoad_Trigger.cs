@@ -7,14 +7,14 @@ public class TextureLoad_Trigger : MonoBehaviour
 {
     [SerializeField] private TextureLoader[] loaders;
 
-
     private void Update()
     {
+        // if L is pressed just run through triggering all possible loaders
         if (Input.GetKeyDown(KeyCode.L))
         {
-            foreach (var VARIABLE in loaders)
+            foreach (var loader in loaders)
             {
-                StartCoroutine(VARIABLE.LoadTexture());
+                StartCoroutine(loader.LoadTexture());
             }
         } 
     }

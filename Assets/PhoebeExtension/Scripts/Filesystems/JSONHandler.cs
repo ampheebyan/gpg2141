@@ -7,9 +7,9 @@ using Random = UnityEngine.Random;
 
 public class JSONHandler : MonoBehaviour
 {
-    public static JSONHandler Instance;
+    public static JSONHandler Instance; // instance
 
-    [SerializeField] private string path;
+    [SerializeField] private string path; // path
     
     private void Awake()
     {
@@ -22,9 +22,10 @@ public class JSONHandler : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        if(string.IsNullOrEmpty(path)) path = Application.persistentDataPath;
+        if(string.IsNullOrEmpty(path)) path = Application.persistentDataPath; // go to data path if empty
     }
 
+    // save data to JSON, log if success
     public void Save(string fileName, object data, bool overwrite = false)
     {
         string json = JsonUtility.ToJson(data, true);
@@ -32,6 +33,7 @@ public class JSONHandler : MonoBehaviour
         Debug.Log(outcome);
     }
 
+    // load as PlayerData.Data
     public PlayerData.Data Load(string fileName)
     {
         string unparsed = FSOperations.ReadFile(Path.Join(path, fileName));
